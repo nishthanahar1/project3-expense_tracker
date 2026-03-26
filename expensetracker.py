@@ -14,5 +14,13 @@ def add():
     amount = request.form['amount']
     expenses.append({'name': name, 'amount': amount})
     return redirect('/')
+
+@app.route('/delete/<int:index>')
+def delete(index):
+    if 0 <= index < len(expenses):
+        expenses.pop(index)
+    return redirect('/')
+
 if __name__ == '__main__':
     app.run(debug=True)
+
