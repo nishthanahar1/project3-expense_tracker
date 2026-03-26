@@ -6,7 +6,8 @@ expenses = []
 
 @app.route('/')
 def index():
-    return render_template('index.html', expenses=expenses)
+    total = sum(int(e['amount']) for e in expenses)
+    return render_template('index.html', expenses=expenses, total=total)
 
 @app.route('/add', methods=['POST'])
 def add():
@@ -23,4 +24,3 @@ def delete(index):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
