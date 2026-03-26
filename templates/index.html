@@ -14,7 +14,10 @@
 
     <ul>
         {% for expense in expenses %}
-            <li>{{ expense.name }} - ₹{{ expense.amount }}</li>
+            <li>
+                {{ expense.name }} - ₹{{ expense.amount }}
+                <a href="/delete/{{ loop.index0 }}">Delete</a>
+            </li>
         {% endfor %}
     </ul>
 </body>
