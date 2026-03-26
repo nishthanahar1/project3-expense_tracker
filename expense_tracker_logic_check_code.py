@@ -7,14 +7,20 @@ def delete_expense(index):
     if 0 <= index < len(expenses):
         expenses.pop(index)
 
-# Add items
+def calculate_total():
+    return sum(int(e['amount']) for e in expenses)
+
+# Add expenses
 add_expense('Food', 100)
 add_expense('Transport', 50)
 add_expense('Books', 200)
 
-print("Before delete:", expenses)
+print("Expenses:", expenses)
+print("Total:", calculate_total())
 
-# Delete the second expense
+# Delete one expense
 delete_expense(1)
 
-print("After delete:", expenses)
+print("\nAfter delete:")
+print("Expenses:", expenses)
+print("Total:", calculate_total())
