@@ -1,26 +1,52 @@
-expenses = []
+import sqlite3
+
+def init_db():
+    conn = sqlite3.connect('expenses.db')
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS expenses
+                 (id INTEGER PRIMARY KEY, name TEXT, amount INTEGER)''')
+    conn.commit()
+    conn.close()
 
 def add_expense(name, amount):
-    expenses.append({'name': name, 'amount': amount})
+    conn = sqlite3.connect('expenses.db')
+    c = conn.cursor()
+    c.execute('INSERT INTO expenses (name, amount) VALUES (?, ?)', (name, amount))
+    conn.commit()
+    conn.close()
 
-def delete_expense(index):
-    if 0 <= index < len(expenses):
-        expenses.pop(index)
+def get_expenses():
+    conn = sqlite3.connect('expenses.db')
+    c = conn.cursor()
+    c.execute('SELECT * FROM expenses')
+    data = c.fetchall()
+    conn.close()
+    return data
+
+def delete_expense(id):
+    conn = sqlite3.connect('expenses.db')
+    c = conn.cursor()
+    c.execute('DELETE FROM expenses WHERE id=?', (id,))
+    conn.commit()
+    conn.close()
 
 def calculate_total():
-    return sum(int(e['amount']) for e in expenses)
+    expenses = get_expenses()
+    return sum(e[2] for e in expenses)
+
+# Initialize DB
+init_db()
 
 # Add expenses
 add_expense('Food', 100)
 add_expense('Transport', 50)
 add_expense('Books', 200)
 
-print("Expenses:", expenses)
+print("Before delete:", get_expenses())
 print("Total:", calculate_total())
 
-# Delete one expense
-delete_expense(1)
+# Delete expense with id = 2
+delete_expense(2)
 
-print("\nAfter delete:")
-print("Expenses:", expenses)
+print("\nAfter delete:", get_expenses())
 print("Total:", calculate_total())
