@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
-from datetime import datetime
 
 app = Flask(__name__)
 
@@ -12,9 +11,11 @@ def init_db():
                   name TEXT,
                   amount INTEGER,
                   category TEXT,
-                  date TEXT)''')
+                  date TEXT,
+                  note TEXT)''')
     conn.commit()
     conn.close()
+
 
 def get_expenses():
     conn = sqlite3.connect('expenses.db')
@@ -24,11 +25,29 @@ def get_expenses():
     conn.close()
     return data
 
-def add_expense(name, amount, category, date):
+
+def add_expense(name, amount, category, date, note):
     conn = sqlite3.connect('expenses.db')
     c = conn.cursor()
-    c.execute('INSERT INTO expenses (name, amount, category, date) VALUES (?, ?, ?, ?)',
-              (name, amount, category, date))
+    c.execute('INSERT INTO expenses (name, amount, category, date, note) VALUES (?, ?, ?, ?, ?)',
+              (name, amount, category, date, note))
+    conn.commit()
+    conn.close()
+
+
+def delete_expense(id):
+    conn = sqlite3.connect('expenses.db')
+    c = conn.cursor()
+    c.execute('DELETE FROM expenses WHERE id=?', (id,))
+    conn.commit()
+    conn.close()
+
+
+def update_expense(id, name, amount, category, note):
+    conn = sqlite3.connect('expenses.db')
+    c = conn.cursor()
+    c.execute('UPDATE expenses SET name=?, amount=?, category=?, note=? WHERE id=?',
+              (name, amount, category, note, id))
     conn.commit()
     conn.close()
 
@@ -38,23 +57,45 @@ def index():
     total = sum(e[2] for e in expenses)
     return render_template('index.html', expenses=expenses, total=total)
 
+
 @app.route('/add', methods=['POST'])
 def add():
     name = request.form['name']
     amount = request.form['amount']
     category = request.form['category']
     date = request.form['date']
-    add_expense(name, amount, category, date)
+    note = request.form['note']
+
+    add_expense(name, amount, category, date, note)
     return redirect('/')
+
 
 @app.route('/delete/<int:id>')
 def delete(id):
+    delete_expense(id)
+    return redirect('/')
+
+
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit(id):
     conn = sqlite3.connect('expenses.db')
     c = conn.cursor()
-    c.execute('DELETE FROM expenses WHERE id=?', (id,))
-    conn.commit()
+
+    if request.method == 'POST':
+        name = request.form['name']
+        amount = request.form['amount']
+        category = request.form['category']
+        note = request.form['note']
+
+        update_expense(id, name, amount, category, note)
+        return redirect('/')
+
+    c.execute('SELECT * FROM expenses WHERE id=?', (id,))
+    expense = c.fetchone()
     conn.close()
-    return redirect('/')
+
+    return render_template('edit.html', expense=expense)
+
 
 if __name__ == '__main__':
     init_db()

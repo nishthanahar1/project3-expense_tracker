@@ -8,8 +8,11 @@
 
 <h1>💰 Expense Tracker</h1>
 
+<!-- ADD FORM -->
 <form action="/add" method="POST" class="card">
+
     <input type="text" name="name" placeholder="Expense name" required>
+
     <input type="number" name="amount" placeholder="Amount" required>
 
     <select name="category">
@@ -21,16 +24,32 @@
 
     <input type="date" name="date" required>
 
-    <button type="submit">Add</button>
+    <input type="text" name="note" placeholder="Add note">
+
+    <button type="submit">Add Expense</button>
+
 </form>
 
+<!-- EXPENSE LIST -->
 <div class="card">
+
     {% for e in expenses %}
     <div class="expense">
-        <span>{{ e[1] }} - ₹{{ e[2] }} ({{ e[3] }}) - {{ e[4] }}</span>
-        <a href="/delete/{{ e[0] }}">❌</a>
+        <div>
+            <strong>{{ e[1] }}</strong> - ₹{{ e[2] }}  
+            <br>
+            <small>{{ e[3] }} | {{ e[4] }}</small>  
+            <br>
+            <i>{{ e[5] }}</i>
+        </div>
+
+        <div>
+            <a href="/edit/{{ e[0] }}">✏️</a>
+            <a href="/delete/{{ e[0] }}">❌</a>
+        </div>
     </div>
     {% endfor %}
+
 </div>
 
 <h2>Total: ₹{{ total }}</h2>
