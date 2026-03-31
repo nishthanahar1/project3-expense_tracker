@@ -6,14 +6,30 @@
 </head>
 <body>
 
-<h1>💰 Expense Tracker</h1>
+<nav>
+    <h2>💰 Tracker</h2>
+    <a href="/">Home</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/export">Export</a>
+</nav>
 
-<!-- ADD FORM -->
+<h1>Expense Tracker</h1>
+
+{% if warning %}
+<h3 style="color:red;">⚠ Budget Exceeded!</h3>
+{% endif %}
+
+<h3>Top Category: {{ top }}</h3>
+
+<form action="/search">
+    <input type="text" name="q" placeholder="Search">
+</form>
+
 <form action="/add" method="POST" class="card">
-
-    <input type="text" name="name" placeholder="Expense name" required>
-
-    <input type="number" name="amount" placeholder="Amount" required>
+    <input name="name" placeholder="Name" required>
+    <input name="amount" placeholder="Amount" required>
+    <input name="date" type="date" required>
+    <input name="note" placeholder="Note">
 
     <select name="category">
         <option>Food</option>
@@ -22,37 +38,29 @@
         <option>Other</option>
     </select>
 
-    <input type="date" name="date" required>
-
-    <input type="text" name="note" placeholder="Add note">
-
-    <button type="submit">Add Expense</button>
-
+    <button>Add</button>
 </form>
 
-<!-- EXPENSE LIST -->
 <div class="card">
+    <h3>Total: ₹{{ total }}</h3>
+    <h4>Weekly: ₹{{ weekly }}</h4>
+    <h4>Monthly: ₹{{ monthly }}</h4>
+</div>
 
+<div class="card">
     {% for e in expenses %}
     <div class="expense">
         <div>
-            <strong>{{ e[1] }}</strong> - ₹{{ e[2] }}  
-            <br>
-            <small>{{ e[3] }} | {{ e[4] }}</small>  
-            <br>
-            <i>{{ e[5] }}</i>
+            {{ e[1] }} - ₹{{ e[2] }} ({{ e[3] }})
+            <br>{{ e[4] }} | {{ e[5] }}
         </div>
-
         <div>
             <a href="/edit/{{ e[0] }}">✏️</a>
             <a href="/delete/{{ e[0] }}">❌</a>
         </div>
     </div>
     {% endfor %}
-
 </div>
-
-<h2>Total: ₹{{ total }}</h2>
 
 </body>
 </html>

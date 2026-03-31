@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit Expense</title>
+    <title>Edit</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -9,10 +9,9 @@
 <h1>Edit Expense</h1>
 
 <form method="POST" class="card">
-
-    <input type="text" name="name" value="{{ expense[1] }}">
-
-    <input type="number" name="amount" value="{{ expense[2] }}">
+    <input name="name" value="{{ expense[1] }}">
+    <input name="amount" value="{{ expense[2] }}">
+    <input name="note" value="{{ expense[5] }}">
 
     <select name="category">
         <option>Food</option>
@@ -21,10 +20,7 @@
         <option>Other</option>
     </select>
 
-    <input type="text" name="note" value="{{ expense[5] }}">
-
-    <button type="submit">Update</button>
-
+    <button>Update</button>
 </form>
 
 </body>
